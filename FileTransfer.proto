@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServerFileTransfer.Protos";
+
+// The greeting service definition.
+service FileTransfer {
+  // Sends a greeting
+  //rpc SayHello (HelloRequest) returns (StringResponse) {}
+  // Uploads a file
+  rpc UploadFile(stream UploadFileRequest) returns (StringResponse) {}
+  // Downloads a file
+  rpc DownloadFile(MetaData) returns (stream FileResponse) {}
+}
+
+message StringResponse {
+  string message = 1;
+}
+
+message FileResponse {
+  oneof response{
+    bytes chunkData = 1;
+    string ErrorMessage = 2;
+  }
+}
+
+message MetaData {
+  string filename = 1;
+  string extension = 2;
+}
+
+message UploadFileRequest {
+  oneof request {
+    MetaData metadata = 1;
+    bytes chunkData = 2;
+  }
+}
